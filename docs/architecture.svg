@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="arch-title">
+  <title id="arch-title">git-asobi の構成図。ターミナル入力が commands で解釈され、Repo の状態を layoutGraph が座標化し GraphView が SVG に描く。成功したコマンドは履歴としてシナリオ・URL・localStorage と行き来する。</title>
+  <style>
+    .name { font: 600 14px 'Hiragino Sans', 'Noto Sans JP', sans-serif; fill: #1d1f23; }
+    .file { font: 11px ui-monospace, 'SF Mono', Menlo, monospace; fill: #6a6e78; }
+    .desc { font: 11px 'Hiragino Sans', 'Noto Sans JP', sans-serif; fill: #6a6e78; }
+    .label { font: 11px 'Hiragino Sans', 'Noto Sans JP', sans-serif; fill: #6a6e78; }
+    .caption { font: 12px 'Hiragino Sans', 'Noto Sans JP', sans-serif; fill: #6a6e78; }
+    .heading { font: 700 16px 'Hiragino Sans', 'Noto Sans JP', sans-serif; fill: #1d1f23; }
+    .box { fill: #ffffff; stroke: #d4d7dc; stroke-width: 1.2; }
+    .box-state { fill: #fdeee4; stroke: #e8590c; }
+    .flow { stroke: #9aa0aa; fill: none; stroke-width: 1.6; }
+    .arrow { fill: #9aa0aa; }
+    @media (prefers-color-scheme: dark) {
+      .name, .heading { fill: #e7e8ea; }
+      .file, .desc, .label, .caption { fill: #9a9ea8; }
+      .box { fill: #1a1c21; stroke: #3a3e46; }
+      .box-state { fill: #3a2417; stroke: #ff922b; }
+      .flow { stroke: #6a707c; }
+      .arrow { fill: #6a707c; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 8 4 L 0 8 z" class="arrow"/>
+    </marker>
+  </defs>
+
+  <text x="16" y="34" class="heading">git-asobi の構成</text>
+
+  <rect x="16" y="64" width="160" height="80" rx="10" class="box"/>
+  <text x="96" y="92" text-anchor="middle" class="name">ターミナル</text>
+  <text x="96" y="110" text-anchor="middle" class="file">src/ui/terminal.ts</text>
+  <text x="96" y="128" text-anchor="middle" class="desc">入力と実行結果の表示</text>
+
+  <rect x="208" y="64" width="160" height="80" rx="10" class="box"/>
+  <text x="288" y="92" text-anchor="middle" class="name">execute</text>
+  <text x="288" y="110" text-anchor="middle" class="file">src/lib/commands.ts</text>
+  <text x="288" y="128" text-anchor="middle" class="desc">コマンドの解釈と振り分け</text>
+
+  <rect x="400" y="64" width="160" height="80" rx="10" class="box"/>
+  <text x="480" y="92" text-anchor="middle" class="name">Repo</text>
+  <text x="480" y="110" text-anchor="middle" class="file">src/lib/repo.ts</text>
+  <text x="480" y="128" text-anchor="middle" class="desc">コミットグラフの状態</text>
+
+  <rect x="592" y="64" width="160" height="80" rx="10" class="box"/>
+  <text x="672" y="92" text-anchor="middle" class="name">layoutGraph</text>
+  <text x="672" y="110" text-anchor="middle" class="file">src/lib/graphlayout.ts</text>
+  <text x="672" y="128" text-anchor="middle" class="desc">ノードとエッジの座標計算</text>
+
+  <rect x="784" y="64" width="160" height="80" rx="10" class="box"/>
+  <text x="864" y="92" text-anchor="middle" class="name">GraphView</text>
+  <text x="864" y="110" text-anchor="middle" class="file">src/ui/graphview.ts</text>
+  <text x="864" y="128" text-anchor="middle" class="desc">SVGの差分描画</text>
+
+  <path d="M 176 104 H 202" class="flow" marker-end="url(#arrow)"/>
+  <path d="M 368 104 H 394" class="flow" marker-end="url(#arrow)"/>
+  <path d="M 560 104 H 586" class="flow" marker-end="url(#arrow)"/>
+  <path d="M 752 104 H 778" class="flow" marker-end="url(#arrow)"/>
+
+  <rect x="400" y="252" width="160" height="56" rx="10" class="box box-state"/>
+  <text x="480" y="276" text-anchor="middle" class="name">コマンド履歴</text>
+  <text x="480" y="294" text-anchor="middle" class="file">src/main.ts</text>
+
+  <path d="M 340 144 V 280 H 394" class="flow" marker-end="url(#arrow)"/>
+  <text x="350" y="212" class="label">成功した変更系コマンドを記録</text>
+
+  <rect x="208" y="374" width="160" height="56" rx="10" class="box"/>
+  <text x="288" y="398" text-anchor="middle" class="name">シナリオ</text>
+  <text x="288" y="416" text-anchor="middle" class="file">src/lib/scenarios.ts</text>
+
+  <rect x="400" y="374" width="160" height="56" rx="10" class="box"/>
+  <text x="480" y="398" text-anchor="middle" class="name">URL共有</text>
+  <text x="480" y="416" text-anchor="middle" class="file">src/lib/share.ts</text>
+
+  <rect x="592" y="374" width="160" height="56" rx="10" class="box"/>
+  <text x="672" y="398" text-anchor="middle" class="name">永続化</text>
+  <text x="672" y="416" text-anchor="middle" class="file">src/lib/storage.ts</text>
+
+  <path d="M 288 374 V 150" class="flow" marker-end="url(#arrow)"/>
+  <text x="280" y="338" text-anchor="end" class="label">コマンド列を再生</text>
+
+  <path d="M 480 314 V 368" class="flow" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="492" y="345" class="label">URLハッシュと相互変換</text>
+
+  <path d="M 560 280 H 672 V 368" class="flow" marker-end="url(#arrow)"/>
+  <text x="690" y="272" text-anchor="middle" class="label">localStorageに保存・復元</text>
+
+  <text x="16" y="458" class="caption">main.ts が全体を配線する。中央のロジック層はDOMに依存せず、テストはここに集中している。</text>
+</svg>
