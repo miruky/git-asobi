@@ -1,7 +1,8 @@
 :root {
   color-scheme: light dark;
+  /* 純白は避け、地に少し温度のある中立色。ターミナルは常に沈んだ地 */
   --bg: #f6f6f4;
-  --surface: #ffffff;
+  --surface: #fcfcfa;
   --surface-2: #efefec;
   --text: #1d1f23;
   --muted: #6a6e78;
@@ -21,11 +22,38 @@
   --term-muted: #868d99;
   --term-prompt: #ffa94d;
   --term-error: #ff8787;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+  --serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
 }
 
+/* 明示ダーク: 沈んだ地に合わせてアクセントと罫線を調整(単なる反転ではない) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #121317;
+  --surface: #1a1c21;
+  --surface-2: #22252b;
+  --text: #e7e8ea;
+  --muted: #9a9ea8;
+  --border: #2e3138;
+  --accent: #ff922b;
+  --accent-soft: #3a2417;
+  --error: #ff8787;
+  --graph-muted: #5d626c;
+  --lane-0: #ff922b;
+  --lane-1: #4dabf7;
+  --lane-2: #51cf66;
+  --lane-3: #cc5de8;
+  --lane-4: #22b8cf;
+  --lane-5: #ff6b6b;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* JSが無い場合の保険: data-theme未設定のときだけOSのダークに従う */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    color-scheme: dark;
     --bg: #121317;
     --surface: #1a1c21;
     --surface-2: #22252b;
@@ -42,7 +70,6 @@
     --lane-3: #cc5de8;
     --lane-4: #22b8cf;
     --lane-5: #ff6b6b;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
   }
 }
 
@@ -136,20 +163,58 @@ a {
   stroke: #4dabf7;
 }
 
+.kicker {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+/* ワードマークは性格のある明朝/セリフで本文のサンセリフと差をつける */
 .brand-text h1 {
-  font-size: 1.3rem;
-  letter-spacing: 0.01em;
-  line-height: 1.3;
+  font-family: var(--serif);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.1;
 }
 
 .tagline {
   font-size: 0.82rem;
   color: var(--muted);
+  margin-top: 2px;
 }
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 7px 13px 7px 11px;
+  color: var(--muted);
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.theme-icon {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle[data-choice='dark'] .theme-icon {
+  transform: rotate(180deg);
 }
 
 .button {
@@ -222,7 +287,6 @@ a {
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--shadow);
 }
 
 .graph-pane {

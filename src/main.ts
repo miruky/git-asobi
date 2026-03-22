@@ -9,10 +9,20 @@ import { Repo } from './lib/repo';
 import { scenarioById, scenarios } from './lib/scenarios';
 import { commandsFromHash, replayHash } from './lib/share';
 import { store } from './lib/storage';
+import {
+  THEME_STORAGE_KEY,
+  choiceLabel,
+  nextChoice,
+  parseChoice,
+  resolveTheme,
+  type ThemeChoice,
+} from './lib/theme';
 import { GraphView } from './ui/graphview';
 import { Terminal } from './ui/terminal';
 
 const STORAGE_KEY = 'git-asobi:commands';
+
+const THEME_ICON = `<svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg>`;
 
 const BRAND_MARK = `
   <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
@@ -33,11 +43,13 @@ app.innerHTML = `
       <div class="brand">
         ${BRAND_MARK}
         <div class="brand-text">
+          <p class="kicker">Git Playground</p>
           <h1>git-asobi</h1>
           <p class="tagline">コマンドを打つとコミットグラフが動く、Git学習シミュレータ</p>
         </div>
       </div>
       <div class="header-actions">
+        <button type="button" class="button theme-toggle" id="theme-toggle">${THEME_ICON}<span id="theme-label">自動</span></button>
         <button type="button" class="button" id="share-button">URLで共有</button>
         <button type="button" class="button" id="reset-button">空に戻す</button>
       </div>
@@ -77,6 +89,31 @@ const graphEmpty = document.getElementById('graph-empty') as HTMLElement;
 const graph = new GraphView(graphHost);
 const terminal = new Terminal(document.getElementById('terminal-host') as HTMLElement, handleLine);
 const scenarioButtons = [...app.querySelectorAll<HTMLButtonElement>('[data-scenario]')];
+
+// テーマ切替(自動 / ライト / ダーク)。選択は保存し、自動時はOSに追従する。
+function setupTheme(): void {
+  const btn = document.getElementById('theme-toggle') as HTMLButtonElement | null;
+  const labelEl = document.getElementById('theme-label');
+  if (!btn || !labelEl) return;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  let choice: ThemeChoice = parseChoice(store.getItem(THEME_STORAGE_KEY));
+  const apply = (): void => {
+    document.documentElement.dataset.theme = resolveTheme(choice, media.matches);
+    labelEl.textContent = choiceLabel(choice);
+    btn.dataset.choice = choice;
+    btn.setAttribute('aria-label', `テーマ: ${choiceLabel(choice)}。クリックで切り替え`);
+  };
+  btn.addEventListener('click', () => {
+    choice = nextChoice(choice);
+    store.setItem(THEME_STORAGE_KEY, choice);
+    apply();
+  });
+  media.addEventListener('change', () => {
+    if (choice === 'system') apply();
+  });
+  apply();
+}
+setupTheme();
 
 // log・status・一覧表示はグラフを変えないので、再生列には変更系だけを残す
 function isMutation(line: string): boolean {
