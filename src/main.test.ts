@@ -52,4 +52,23 @@ describe('main', () => {
     expect((document.getElementById('graph-empty') as HTMLElement).hidden).toBe(false);
     expect(location.hash).toBe('');
   });
+
+  it('Tabキーでコマンドを補完できる', () => {
+    const input = document.querySelector('.term-input') as HTMLInputElement;
+    input.value = 'git comm';
+    input.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Tab', cancelable: true, bubbles: true }),
+    );
+    expect(input.value).toBe('git commit ');
+  });
+
+  it('テーマトグルは自動→ライト→ダークと巡回し、html要素へ反映する', () => {
+    const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+    expect(toggle.dataset.choice).toBe('system');
+    toggle.click();
+    expect(toggle.dataset.choice).toBe('light');
+    expect(document.documentElement.dataset.theme).toBe('light');
+    toggle.click();
+    expect(toggle.dataset.choice).toBe('dark');
+  });
 });
