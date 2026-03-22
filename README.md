@@ -30,8 +30,8 @@ UI層(ターミナルとSVG描画)とロジック層(Gitエンジン・座標計
 | カテゴリ             | 技術                                  |
 | :------------------- | :------------------------------------ |
 | 言語                 | TypeScript 5(strict、実行時依存なし)  |
-| ビルド               | Vite 6                                |
-| テスト               | Vitest 2 + happy-dom                  |
+| ビルド               | Vite 8                                |
+| テスト               | Vitest 4 + happy-dom                  |
 | リンタ・フォーマッタ | ESLint 9(typescript-eslint)+ Prettier |
 | CI / 配信            | GitHub Actions + GitHub Pages         |
 
@@ -65,13 +65,13 @@ $ git merge topic
 Fast-forward: main を 79030a1 まで進めました
 ```
 
-シナリオ(まっさら・ブランチ練習・マージ練習など)を選ぶと典型的な初期状態から始められる。「URLで共有」を押すと現在の状態を再現するURLがコピーされる。状態はURLとlocalStorageにしか残らず、サーバーには何も送られない。
+入力中に上下キーで履歴をたどり、Tabキーでコマンド・サブコマンド・参照名(ブランチ / タグ)を補完できる。シナリオ(まっさら・最初の一歩・ブランチ練習・マージ練習・リベース練習・タグ練習)を選ぶと典型的な初期状態から始められる。「URLで共有」を押すと現在の状態を再現するURLがコピーされ、右上のボタンで表示テーマを 自動 / ライト / ダーク に切り替えられる(選択はブラウザに保存)。状態はURLとlocalStorageにしか残らず、サーバーには何も送られない。
 
 扱わないものも明記しておく。作業ツリー・ステージング・コンフリクト・リモートは再現しないため、マージは常に成功する。コマンドの網羅より「グラフが動く様子の理解」を優先した割り切りである。
 
 ## プロジェクト構成
 
-- `src/lib/` — DOM非依存のロジック。Gitエンジン(`repo.ts`)、コマンド解釈(`commands.ts`)、グラフ座標計算(`graphlayout.ts`)、URL共有(`share.ts`)、永続化(`storage.ts`)、シナリオ定義(`scenarios.ts`)
+- `src/lib/` — DOM非依存のロジック。Gitエンジン(`repo.ts`)、コマンド解釈(`commands.ts`)、Tab補完(`completion.ts`)、グラフ座標計算(`graphlayout.ts`)、URL共有(`share.ts`)、永続化(`storage.ts`)、テーマ解決(`theme.ts`)、シナリオ定義(`scenarios.ts`)
 - `src/ui/` — DOM・SVGを扱う層。コミットグラフ描画(`graphview.ts`)とターミナル(`terminal.ts`)
 - `src/main.ts` — 画面の組み立てと配線
 - `docs/` — 構成図

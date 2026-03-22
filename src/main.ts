@@ -7,6 +7,7 @@ import { execute, tokenize } from './lib/commands';
 import { layoutGraph } from './lib/graphlayout';
 import { Repo } from './lib/repo';
 import { scenarioById, scenarios } from './lib/scenarios';
+import { complete } from './lib/completion';
 import { commandsFromHash, replayHash } from './lib/share';
 import { store } from './lib/storage';
 import {
@@ -87,7 +88,12 @@ let executed: string[] = [];
 const graphHost = document.getElementById('graph-host') as HTMLElement;
 const graphEmpty = document.getElementById('graph-empty') as HTMLElement;
 const graph = new GraphView(graphHost);
-const terminal = new Terminal(document.getElementById('terminal-host') as HTMLElement, handleLine);
+// Tab補完は現在のリポジトリのブランチ・タグ名を候補に使う
+const terminal = new Terminal(
+  document.getElementById('terminal-host') as HTMLElement,
+  handleLine,
+  (line) => complete(line, { branches: [...repo.branches.keys()], tags: [...repo.tags.keys()] }),
+);
 const scenarioButtons = [...app.querySelectorAll<HTMLButtonElement>('[data-scenario]')];
 
 // テーマ切替(自動 / ライト / ダーク)。選択は保存し、自動時はOSに追従する。
