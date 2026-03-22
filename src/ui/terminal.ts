@@ -1,5 +1,7 @@
-// ターミナル風UI。実行のたびにプロンプト行と結果を追記し、
-// 上下キーで入力履歴をたどれる。DOMの肥大を防ぐため古い行は捨てる。
+// ターミナル風UI。実行のたびにプロンプト行と結果を追記し、上下キーで入力履歴を
+// たどり、Tabでコマンド・参照名を補完できる。DOMの肥大を防ぐため古い行は捨てる。
+
+import type { CompletionResult } from '../lib/completion';
 
 export type LineKind = 'prompt' | 'output' | 'error' | 'note';
 
@@ -12,7 +14,11 @@ export class Terminal {
   private pos = 0;
   private draft = '';
 
-  constructor(host: HTMLElement, onSubmit: (line: string) => void) {
+  constructor(
+    host: HTMLElement,
+    onSubmit: (line: string) => void,
+    onComplete?: (line: string) => CompletionResult,
+  ) {
     host.innerHTML = `
       <div class="term-log" role="log" aria-live="polite" aria-label="コマンドの実行結果"></div>
       <form class="term-form">
@@ -56,6 +62,12 @@ export class Terminal {
         this.input.value =
           this.pos === this.history.length ? this.draft : (this.history[this.pos] ?? '');
         event.preventDefault();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        if (!onComplete) return;
+        const result = onComplete(this.input.value);
+        this.input.value = result.line;
+        if (result.candidates.length > 0) this.print(result.candidates.join('   '), 'note');
       }
     });
 
